@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{lightgray}{gray}{0.9}
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+}
+
+\begin{document}
+
+\section*{Guide: Using Pelias with Docker}
+
+\subsection*{1. Install Docker and Docker Compose}
+You need Docker and Docker Compose installed on your system.
+
+\subsubsection*{For Ubuntu/Linux:}
+\begin{lstlisting}
+sudo apt update
+sudo apt install docker.io
+sudo apt install docker-compose
+sudo systemctl start docker
+sudo systemctl enable docker
+\end{lstlisting}
+
+\subsubsection*{For macOS/Windows:}
+Download and install \textbf{Docker Desktop} from \url{https://www.docker.com/products/docker-desktop}. It includes Docker Compose.
+
+\subsection*{2. Clone the Pelias Docker Repository}
+\begin{lstlisting}
+git clone https://github.com/pelias/docker
+cd docker
+\end{lstlisting}
+
+\subsection*{3. Set Up Pelias Configuration}
+\begin{enumerate}
+    \item Copy the default configuration file:
+    \begin{lstlisting}
+cp pelias.json.example pelias.json
+    \end{lstlisting}
+    \item Edit \texttt{pelias.json} to customize your setup.
+\end{enumerate}
+
+\subsection*{4. Download Data}
+Download geospatial data (e.g., OpenStreetMap):
+\begin{lstlisting}
+mkdir -p data/openstreetmap
+wget -O data/openstreetmap/region.osm.pbf https://download.geofabrik.de/your-region.osm.pbf
+\end{lstlisting}
+
+\subsection*{5. Run Pelias Services}
+\begin{enumerate}
+    \item Build and start services:
+    \begin{lstlisting}
+docker-compose up
+    \end{lstlisting}
+    \item Run in detached mode:
+    \begin{lstlisting}
+docker-compose up -d
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection*{6. Check Running Services}
+\begin{enumerate}
+    \item List running containers:
+    \begin{lstlisting}
+docker ps
+    \end{lstlisting}
+    \item Check service logs:
+    \begin{lstlisting}
+docker-compose logs
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection*{7. Import Data}
+\begin{enumerate}
+    \item Run the OpenStreetMap importer:
+    \begin{lstlisting}
+docker-compose run import-openstreetmap
+    \end{lstlisting}
+    \item Import other datasets (e.g., OpenAddresses):
+    \begin{lstlisting}
+docker-compose run import-openaddresses
+    \end{lstlisting}
+    \item Build the geographic hierarchy:
+    \begin{lstlisting}
+docker-compose run prepare-all
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection*{8. Test Pelias API}
+\begin{enumerate}
+    \item Test forward geocoding:
+    \begin{lstlisting}
+curl "http://localhost:4000/v1/search?text=1600 Pennsylvania Ave NW, Washington, DC"
+    \end{lstlisting}
+    \item Test reverse geocoding:
+    \begin{lstlisting}
+curl "http://localhost:4000/v1/reverse?point.lat=38.8977&point.lon=-77.0365"
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection*{9. Stop Services}
+To stop running services:
+\begin{lstlisting}
+docker-compose down
+\end{lstlisting}
+
+\subsection*{Additional Tips}
+\begin{itemize}
+    \item \textbf{Restart Services:} Restart after changes:
+    \begin{lstlisting}
+docker-compose restart
+    \end{lstlisting}
+    \item \textbf{Clean Elasticsearch:} Reset data:
+    \begin{lstlisting}
+docker-compose down -v
+    \end{lstlisting}
+    \item \textbf{Update Docker Images:} Keep Pelias up to date:
+    \begin{lstlisting}
+docker-compose pull
+    \end{lstlisting}
+\end{itemize}
+
+\end{document}
