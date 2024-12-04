@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{hyperref}
+
 
 \definecolor{lightgray}{gray}{0.9}
 \lstset{
@@ -20,19 +22,56 @@
 \section*{Guide: Using Pelias with Docker}
 
 \subsection*{1. Install Docker and Docker Compose}
-You need Docker and Docker Compose installed on your system.
+Docker and Docker Compose are required to run Pelias. Here's how to install them:
 
 \subsubsection*{For Ubuntu/Linux:}
-\begin{lstlisting}
+\begin{enumerate}
+    \item Update the package database:
+    \begin{lstlisting}
 sudo apt update
-sudo apt install docker.io
+    \end{lstlisting}
+    \item Install prerequisite packages:
+    \begin{lstlisting}
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+    \end{lstlisting}
+    \item Add Docker's GPG key:
+    \begin{lstlisting}
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    \end{lstlisting}
+    \item Add the Docker repository:
+    \begin{lstlisting}
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    \end{lstlisting}
+    \item Install Docker:
+    \begin{lstlisting}
+sudo apt update
+sudo apt install docker-ce
+    \end{lstlisting}
+    \item Verify Docker installation:
+    \begin{lstlisting}
+sudo docker --version
+    \end{lstlisting}
+    \item Install Docker Compose:
+    \begin{lstlisting}
 sudo apt install docker-compose
-sudo systemctl start docker
-sudo systemctl enable docker
-\end{lstlisting}
+    \end{lstlisting}
+    \item Verify Docker Compose installation:
+    \begin{lstlisting}
+docker-compose --version
+    \end{lstlisting}
+\end{enumerate}
 
 \subsubsection*{For macOS/Windows:}
-Download and install \textbf{Docker Desktop} from \url{https://www.docker.com/products/docker-desktop}. It includes Docker Compose.
+Download and install \textbf{Docker Desktop}:
+\begin{itemize}
+    \item Visit: \url{https://www.docker.com/products/docker-desktop}.
+    \item Follow the installation steps provided on the website.
+    \item Verify installation:
+    \begin{lstlisting}
+docker --version
+docker-compose --version
+    \end{lstlisting}
+\end{itemize}
 
 \subsection*{2. Clone the Pelias Docker Repository}
 \begin{lstlisting}
